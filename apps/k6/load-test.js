@@ -1,6 +1,6 @@
-import http from "k6/http";
-import { check, group, sleep } from "k6";
-import { Trend, Rate } from "k6/metrics";
+import http from 'k6/http';
+import { check, group, sleep } from 'k6';
+import { Trend, Rate } from 'k6/metrics';
 
 // =============================================================================
 // CUSTOM METRICS
@@ -8,8 +8,8 @@ import { Trend, Rate } from "k6/metrics";
 // Trend  — tracks a distribution of values (min, max, avg, percentiles)
 // Rate   — tracks the percentage of non-zero values (good for pass/fail ratios)
 
-const userListDuration = new Trend("user_list_duration", true); // true = time values
-const creationSuccess = new Rate("user_creation_success");
+const userListDuration = new Trend('user_list_duration', true); // true = time values
+const creationSuccess = new Rate('user_creation_success');
 
 // =============================================================================
 // TAG HELPERS
@@ -28,9 +28,9 @@ export const options = {
   // Stages ramp virtual users (VUs) up and down over time.
   // This simulates realistic traffic: gradual increase → peak → wind down.
   stages: [
-    { duration: "10s", target: 10 }, // ramp up to 10 VUs over 10 seconds
-    { duration: "20s", target: 10 }, // hold at 10 VUs for 20 seconds (steady state)
-    { duration: "10s", target: 0 }, // ramp down to 0 VUs over 10 seconds
+    { duration: '10s', target: 10 }, // ramp up to 10 VUs over 10 seconds
+    { duration: '20s', target: 10 }, // hold at 10 VUs for 20 seconds (steady state)
+    { duration: '10s', target: 0 }, // ramp down to 0 VUs over 10 seconds
   ],
 
   // Thresholds define pass/fail criteria for the entire test run.
@@ -40,24 +40,24 @@ export const options = {
   // endpoint its own independent pass/fail criteria and metric breakdown.
   thresholds: {
     // Global thresholds — apply across all requests
-    http_req_duration: ["p(95)<500"],
-    http_req_failed: ["rate<0.05"],
-    checks: ["rate>0.95"],
+    http_req_duration: ['p(95)<500'],
+    http_req_failed: ['rate<0.05'],
+    checks: ['rate>0.95'],
 
     // Per-endpoint thresholds — independent performance criteria
-    "http_req_duration{name:GET /users}": ["p(95)<300"],
-    "http_req_duration{name:GET /users/:id}": ["p(95)<200"],
-    "http_req_duration{name:POST /users}": ["p(95)<500"],
-    "http_req_duration{name:PUT /users/:id}": ["p(95)<400"],
-    "http_req_duration{name:DELETE /users/:id}": ["p(95)<300"],
+    'http_req_duration{name:GET /users}': ['p(95)<300'],
+    'http_req_duration{name:GET /users/:id}': ['p(95)<200'],
+    'http_req_duration{name:POST /users}': ['p(95)<500'],
+    'http_req_duration{name:PUT /users/:id}': ['p(95)<400'],
+    'http_req_duration{name:DELETE /users/:id}': ['p(95)<300'],
 
     // Custom metrics
-    user_list_duration: ["p(95)<400"],
-    user_creation_success: ["rate>0.90"],
+    user_list_duration: ['p(95)<400'],
+    user_creation_success: ['rate>0.90'],
   },
 };
 
-const BASE_URL = __ENV.BASE_URL || "http://localhost:3001";
+const BASE_URL = __ENV.BASE_URL || 'http://localhost:3001';
 
 // =============================================================================
 // SETUP — runs once before the test starts (not per VU)
@@ -69,16 +69,16 @@ export function setup() {
   // Verify the API is reachable before running the full test
   const res = http.get(`${BASE_URL}/users`);
   check(res, {
-    "setup: API is reachable": (r) => r.status === 200,
+    'setup: API is reachable': (r) => r.status === 200,
   });
 
   // Create a user specifically for update/delete tests so we don't collide
   // with other VUs modifying the same resource.
   const payload = JSON.stringify({
-    name: "Setup User",
-    email: "setup@example.com",
+    name: 'Setup User',
+    email: 'setup@example.com',
   });
-  const params = { headers: { "Content-Type": "application/json" } };
+  const params = { headers: { 'Content-Type': 'application/json' } };
   const createRes = http.post(`${BASE_URL}/users`, payload, params);
 
   const setupUser = createRes.json();
@@ -94,7 +94,7 @@ export function setup() {
 // for the duration of the test. Use groups to organize related requests.
 
 export default function (data) {
-  const params = { headers: { "Content-Type": "application/json" } };
+  const params = { headers: { 'Content-Type': 'application/json' } };
 
   // ---------------------------------------------------------------------------
   // Group: Read Operations
@@ -102,34 +102,33 @@ export default function (data) {
   // Groups let you organize requests logically. In the summary output you'll
   // see metrics broken down by group name.
 
-  group("Read Operations", () => {
+  group('Read Operations', () => {
     // GET /users — list all users
-    const listRes = http.get(`${BASE_URL}/users`, taggedParams("GET /users"));
+    const listRes = http.get(`${BASE_URL}/users`, taggedParams('GET /users'));
 
     // check() validates response properties. Each check is a name + predicate.
     // Failed checks don't stop the test — they're tallied in the results.
     check(listRes, {
-      "GET /users returns 200": (r) => r.status === 200,
-      "GET /users returns array": (r) => Array.isArray(r.json()),
+      'GET /users returns 200': (r) => r.status === 200,
+      'GET /users returns array': (r) => Array.isArray(r.json()),
     });
 
     // Feed our custom Trend metric with the response time
     userListDuration.add(listRes.timings.duration);
 
     // GET /users/:id — fetch a single user
-    const getRes = http.get(`${BASE_URL}/users/1`, taggedParams("GET /users/:id"));
+    const getRes = http.get(`${BASE_URL}/users/1`, taggedParams('GET /users/:id'));
     check(getRes, {
-      "GET /users/1 returns 200": (r) => r.status === 200,
-      "GET /users/1 has correct id": (r) => r.json("id") === 1,
+      'GET /users/1 returns 200': (r) => r.status === 200,
+      'GET /users/1 has correct id': (r) => r.json('id') === 1,
     });
-
   });
 
   // ---------------------------------------------------------------------------
   // Group: Write Operations
   // ---------------------------------------------------------------------------
 
-  group("Write Operations", () => {
+  group('Write Operations', () => {
     // POST /users — create a new user
     const createPayload = JSON.stringify({
       name: `User ${Date.now()}`,
@@ -138,12 +137,12 @@ export default function (data) {
     const createRes = http.post(
       `${BASE_URL}/users`,
       createPayload,
-      taggedParams("POST /users", params),
+      taggedParams('POST /users', params),
     );
 
     const created = check(createRes, {
-      "POST /users returns 201": (r) => r.status === 201,
-      "POST /users returns id": (r) => r.json("id") !== undefined,
+      'POST /users returns 201': (r) => r.status === 201,
+      'POST /users returns id': (r) => r.json('id') !== undefined,
     });
 
     // Feed our custom Rate metric (1 = success, 0 = failure)
@@ -157,23 +156,23 @@ export default function (data) {
       const updateRes = http.put(
         `${BASE_URL}/users/${data.setupUserId}`,
         updatePayload,
-        taggedParams("PUT /users/:id", params),
+        taggedParams('PUT /users/:id', params),
       );
       check(updateRes, {
-        "PUT /users/:id returns 200": (r) => r.status === 200,
+        'PUT /users/:id returns 200': (r) => r.status === 200,
       });
     }
 
     // DELETE — only delete the user we just created (not the setup user)
-    if (created && createRes.json("id")) {
-      const newId = createRes.json("id");
+    if (created && createRes.json('id')) {
+      const newId = createRes.json('id');
       const deleteRes = http.del(
         `${BASE_URL}/users/${newId}`,
         null,
-        taggedParams("DELETE /users/:id"),
+        taggedParams('DELETE /users/:id'),
       );
       check(deleteRes, {
-        "DELETE /users/:id returns 200": (r) => r.status === 200,
+        'DELETE /users/:id returns 200': (r) => r.status === 200,
       });
     }
   });
