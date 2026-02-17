@@ -6,7 +6,8 @@
     "build": "bun nest build",
     "dev": "bun nest start --watch",
     "start": "bun nest start",
-    "start:dev": "bun nest start --watch"
+    "start:dev": "bun nest start --watch",
+    "check-types": "tsc --noEmit"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.0",

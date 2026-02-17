@@ -32,6 +32,31 @@ cd apps/k6 && bun run test
 cd apps/k6 && K6_WEB_DASHBOARD=true K6_WEB_DASHBOARD_EXPORT=report.html k6 run load-test.js
 ```
 
+## Code Quality Commands
+
+```bash
+# Type checking (runs tsc --noEmit via Turborepo)
+bun run check-types
+
+# Lint (oxlint)
+bun run lint
+bun run lint:fix
+
+# Format (oxfmt)
+bun run format
+bun run format:fix
+```
+
+## Git Hooks
+
+Pre-commit hooks are managed by [Lefthook](https://github.com/evilmartians/lefthook) and run automatically on `git commit`:
+
+- **typecheck** — `bun run check-types` (full project)
+- **lint** — `oxlint` on staged `*.{js,ts}` files
+- **format** — `oxfmt --check` on staged `*.{js,ts,json}` files
+
+All three run in parallel. To skip hooks in exceptional cases: `git commit --no-verify`.
+
 ## Architecture
 
 Bun + Turborepo monorepo with a NestJS REST API and k6 load testing suite.

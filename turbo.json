@@ -19,6 +19,11 @@
     },
     "test:report": {
       "cache": false
-    }
+    },
+    "check-types": {},
+    "//#lint": {},
+    "//#lint:fix": { "cache": false },
+    "//#format": {},
+    "//#format:fix": { "cache": false }
   }
 }

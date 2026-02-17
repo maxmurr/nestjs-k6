@@ -1,0 +1,11 @@
+pre-commit:
+  parallel: true
+  commands:
+    typecheck:
+      run: bun run check-types
+    lint:
+      glob: '*.{js,ts}'
+      run: bunx oxlint {staged_files}
+    format:
+      glob: '*.{js,ts,json}'
+      run: bunx oxfmt --check {staged_files}
