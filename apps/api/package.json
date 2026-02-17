@@ -1,9 +1,10 @@
 {
-  "name": "api",
+  "name": "@repo/api",
   "version": "1.0.0",
   "private": true,
   "scripts": {
     "build": "bun nest build",
+    "dev": "bun nest start --watch",
     "start": "bun nest start",
     "start:dev": "bun nest start --watch"
   },
@@ -16,6 +17,7 @@
   },
   "devDependencies": {
     "@nestjs/cli": "^11.0.0",
+    "@repo/typescript-config": "workspace:*",
     "typescript": "^5.7.0"
   }
 }

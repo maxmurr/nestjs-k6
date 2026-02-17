@@ -3,6 +3,7 @@ dist/
 *.js.map
 *.d.ts
 .DS_Store
+.turbo
 
 # k6 reports
-k6/report.html
+**/report.html

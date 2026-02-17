@@ -1,5 +1,5 @@
 {
-  "name": "k6",
+  "name": "@repo/k6",
   "version": "1.0.0",
   "private": true,
   "scripts": {
