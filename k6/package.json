@@ -1,0 +1,9 @@
+{
+  "name": "k6",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "test": "k6 run load-test.js",
+    "test:report": "K6_WEB_DASHBOARD=true K6_WEB_DASHBOARD_EXPORT=report.html k6 run load-test.js"
+  }
+}

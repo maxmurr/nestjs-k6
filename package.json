@@ -1,0 +1,5 @@
+{
+  "name": "nestjs-k6",
+  "private": true,
+  "workspaces": ["api", "k6"]
+}

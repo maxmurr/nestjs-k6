@@ -1,0 +1,8 @@
+node_modules/
+dist/
+*.js.map
+*.d.ts
+.DS_Store
+
+# k6 reports
+k6/report.html
