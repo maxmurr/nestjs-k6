@@ -1,0 +1,24 @@
+{
+  "$schema": "https://raw.githubusercontent.com/oxc-project/oxc/main/npm/oxlint/configuration_schema.json",
+  "plugins": ["typescript", "import", "unicorn"],
+  "categories": {
+    "correctness": "error",
+    "suspicious": "warn"
+  },
+  "rules": {
+    "no-unused-vars": "error",
+    "no-explicit-any": "error",
+    "no-console": "off",
+    "typescript/no-extraneous-class": ["warn", { "allowWithDecorator": true }]
+  },
+  "overrides": [
+    {
+      "files": ["apps/k6/**/*.js"],
+      "rules": {
+        "typescript/no-unused-vars": "off",
+        "typescript/no-explicit-any": "off"
+      }
+    }
+  ],
+  "ignorePatterns": ["node_modules", "dist", "*.d.ts", "*.js.map"]
+}

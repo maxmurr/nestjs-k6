@@ -1,0 +1,9 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nicolo-ribaudo/oxc-prettier-config-schema/refs/heads/main/schema.json",
+  "printWidth": 100,
+  "semi": true,
+  "singleQuote": true,
+  "trailingComma": "all",
+  "tabWidth": 2,
+  "ignore": ["dist", "node_modules", "*.d.ts", "*.js.map", "report.html"]
+}
